@@ -1,0 +1,15 @@
+#!/bin/sh
+# Register the AUv3 extension so hosts see it without launching the app first.
+APP="$2/ExcitingCompressor.app"
+LSREGISTER=/System/Library/Frameworks/CoreServices.framework/Frameworks/LaunchServices.framework/Support/lsregister
+
+[ -d "$APP" ] || exit 0
+"$LSREGISTER" -f "$APP" >/dev/null 2>&1
+
+CONSOLE_USER=$(/usr/bin/stat -f %Su /dev/console)
+if [ -n "$CONSOLE_USER" ] && [ "$CONSOLE_USER" != "root" ]; then
+    CONSOLE_UID=$(/usr/bin/id -u "$CONSOLE_USER")
+    /bin/launchctl asuser "$CONSOLE_UID" /usr/bin/sudo -u "$CONSOLE_USER" \
+        /usr/bin/pluginkit -a "$APP/Contents/PlugIns/ExcitingCompressorExtension.appex" >/dev/null 2>&1
+fi
+exit 0
