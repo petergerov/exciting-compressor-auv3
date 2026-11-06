@@ -114,13 +114,9 @@ stacks into a single column on narrow screens.
 ## Build
 
 ```sh
-cp .env.example .env              # once: set your Team ID and bundle ID prefix
-scripts/generate-project.sh       # runs xcodegen with .env; project.yml is the source of truth
+xcodegen generate                 # project.yml is the source of truth
 open ExcitingCompressor.xcodeproj # run ExcitingCompressor_macOS or ExcitingCompressor_iOS
 ```
-
-The generated `.xcodeproj` is git-ignored because it contains your signing team. Re-run the script
-after editing `project.yml`.
 
 Run the container app once to register the extension. It also includes a test rig: open an audio
 file, press Play, and adjust the plugin. Validate on macOS with:
@@ -136,15 +132,13 @@ build. Remove it, or reinstall from a fresh package, to test your changes in a h
 
 ```sh
 scripts/make-installer.sh                                    # signed .pkg → build/installer/
-NOTARY_PROFILE=<profile> scripts/make-installer.sh           # + notarize & staple
+NOTARY_PROFILE=exciting-notary scripts/make-installer.sh     # + notarize & staple
 ```
 
 The script builds a universal Release archive, signs it with Developer ID Application, and wraps it
 in a `.pkg` signed with Developer ID Installer. The package installs to `/Applications` and its
-postinstall step registers the AU. It reads `INSTALLER_IDENTITY` and the other signing settings
-from `.env`. Set up notarization once with
-`xcrun notarytool store-credentials <profile> --apple-id <id> --team-id <team-id>`, then set
-`NOTARY_PROFILE` in `.env` or pass it on the command line.
+postinstall step registers the AU. Set up notarization once with
+`xcrun notarytool store-credentials exciting-notary --apple-id <id> --team-id C9LBGZNZ6P`.
 
 Gatekeeper warns about packages that aren't notarized when they're opened on other Macs. Raise
 `MARKETING_VERSION` in `project.yml` before building a release, so each package has its own version.
