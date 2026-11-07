@@ -128,6 +128,18 @@ auval -strict -v aufx ExCp Grov
 If a copy is already installed in `/Applications`, macOS may keep loading that one instead of your
 build. Remove it, or reinstall from a fresh package, to test your changes in a host.
 
+### App icon
+
+```sh
+swift icon/make-icon.swift        # -> App/Assets.xcassets/AppIcon.appiconset/
+```
+
+`make-icon.swift` draws the same layout as the jj-breeze, jj-midnight and jj-moon icons: panel,
+corner screws, meter arc, serif wordmark and jewel lamps. This one uses the Tweed sand lacquer, so
+the four icons look like one family. It writes the opaque 1024 px iOS icon and the macOS sizes,
+which have their own rounded body and shadow. The colours are the hex values from
+`GearPalette.tweed`, so if that palette changes, update the script to match.
+
 ## Installer (macOS)
 
 ```sh
